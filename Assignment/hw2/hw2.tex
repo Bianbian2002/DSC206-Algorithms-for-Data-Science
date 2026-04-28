@@ -1,0 +1,263 @@
+\documentclass[en,hazy,blue,12pt,normal]{elegantnote}
+
+\input{../../preface}
+
+\title{DSC 206: Homework 2}
+\author{Zeyu Bian}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+%================================================================
+\begin{homework}
+\textbf{Problem 1 (12 pts).} Let $P=\{p_1,\dots,p_n\}\subset\MR$ with $p_1\le p_2\le\cdots\le p_n$.
+\begin{enumerate}
+    \item[(1.a)] Describe the optimal $1$-center.
+    \item[(1.b)] Describe the optimal $1$-mean.
+    \item[(1.c)] Give an example where the $1$-median minimizer is not unique. Then, assuming $n$ is odd, find $p^*=\arg\min_{p\in P}\sum_{i=1}^n |p_i-p|$ and prove your answer.
+\end{enumerate}
+\end{homework}
+
+\begin{proof}\solutionname
+
+\textbf{(1.a) Optimal $1$-center.}
+The $1$-center cost is $f(x)=\max_i |p_i-x|=\max(x-p_1,\,p_n-x)$ since the points are sorted. This is minimized when both terms are equal, i.e.,
+\[
+x^*=\frac{p_1+p_n}{2},\qquad \text{cost}=\frac{p_n-p_1}{2}.
+\]
+
+\textbf{(1.b) Optimal $1$-mean.}
+The $1$-mean cost is $g(x)=\sum_{i=1}^n (p_i-x)^2$. Setting $g'(x)=-2\sum_{i=1}^n(p_i-x)=0$ yields
+\[
+x^*=\bar p=\frac{1}{n}\sum_{i=1}^n p_i,
+\]
+the arithmetic mean. Since $g''(x)=2n>0$, this is the unique minimizer.
+
+\textbf{(1.c) $1$-median.}
+
+\emph{Non-uniqueness example.} Take $n=2$ with $P=\{0,1\}$. Then $h(x)=|x|+|x-1|=1$ for every $x\in[0,1]$, so every point in $[0,1]$ is a minimizer.
+
+\emph{Odd $n$.} We claim $p^*=p_{(n+1)/2}$, the median element of $P$.
+
+\emph{Proof.} The function $h(x)=\sum_{i=1}^n|p_i-x|$ is convex and piecewise linear. On the open interval $(p_k,p_{k+1})$ for $1\le k\le n-1$ we have
+\[
+h'(x)=\#\{i:p_i<x\}-\#\{i:p_i>x\}=k-(n-k)=2k-n.
+\]
+For odd $n$, $2k-n$ is never zero. It is negative for $k\le \frac{n-1}{2}$ and positive for $k\ge \frac{n+1}{2}$. Thus $h$ strictly decreases on $(-\infty,p_{(n+1)/2}]$ and strictly increases on $[p_{(n+1)/2},\infty)$. Hence the unique minimizer over all of $\MR$, and a fortiori the unique minimizer in $P$, is
+\[
+p^*=p_{(n+1)/2}.\qedhere
+\]
+\end{proof}
+
+%================================================================
+\begin{homework}
+\textbf{Problem 2 (10 pts).} Let $\mu^*$ be the optimal $k$-center cost (with arbitrary centers in $\MR^d$) and $\widehat\mu^*$ the optimal restricted $k$-center cost (centers must lie in $P$). Prove $\mu^*\le \widehat\mu^*\le 2\mu^*$.
+\end{homework}
+
+\begin{proof}\solutionname
+
+\textbf{Lower bound $\mu^*\le \widehat\mu^*$.}
+Every restricted clustering is also a feasible (unrestricted) $k$-clustering, since $P\subset\MR^d$. Therefore the optimum over a smaller (restricted) feasible set is at least the optimum over the larger feasible set:
+$\mu^*=\min_{\text{all}}\text{cost}\le \min_{\text{restricted}}\text{cost}=\widehat\mu^*.$
+
+\textbf{Upper bound $\widehat\mu^*\le 2\mu^*$.}
+Let $\{(c_i^*,C_i^*)\}_{i\in[1,k]}$ be an optimal unrestricted clustering with cost $\mu^*$. For each $i$, choose any data point $\widehat c_i\in C_i^*$ as a restricted center (assume $C_i^*\ne\emptyset$; empty clusters can be discarded). Keep the partition the same. For any $p\in C_i^*$, the triangle inequality gives
+\[
+d(p,\widehat c_i)\le d(p,c_i^*)+d(c_i^*,\widehat c_i)\le \mu^*+\mu^*=2\mu^*,
+\]
+where both bounds use the definition $d(q,c_i^*)\le \mu^*$ for all $q\in C_i^*$. Thus this restricted clustering has cost at most $2\mu^*$, and since $\widehat\mu^*$ is the minimum over all restricted clusterings,
+\[
+\widehat\mu^*\le 2\mu^*.\qedhere
+\]
+\end{proof}
+
+%================================================================
+\begin{homework}
+\textbf{Problem 3 (5 pts).} Graph $G=(V,E)$ has three connected components on vertex sets $V_1=\{v_1,\dots,v_{n/3}\}$, $V_2=\{v_{n/3+1},\dots,v_{2n/3}\}$, $V_3=\{v_{2n/3+1},\dots,v_n\}$. Provide three orthonormal eigenvectors of the Laplacian $L$ for eigenvalue $0$.
+\end{homework}
+
+\begin{proof}\solutionname
+For any connected component, the indicator vector of that component is a null vector of $L$, since $L\bm 1_V=0$ on each component (the row sums of $L$ restricted to a component are zero). The three indicator vectors of $V_1,V_2,V_3$ have disjoint support, so they are mutually orthogonal. Normalizing each to unit length (each has $n/3$ ones) gives the orthonormal basis
+\[
+\phi_i \;=\; \sqrt{\tfrac{3}{n}}\;\bm 1_{V_i},\qquad i=1,2,3,
+\]
+explicitly $(\phi_i)_j=\sqrt{3/n}$ if $v_j\in V_i$ and $0$ otherwise. By construction $L\phi_i=0$, $\|\phi_i\|=1$, and $\langle\phi_i,\phi_j\rangle=0$ for $i\ne j$.
+\end{proof}
+
+%================================================================
+\begin{homework}
+\textbf{Problem 4 (5 pts).} Let $S$ be a finite point set with centroid $\mu(S)$, and let $T$ be disjoint from $S$. Show that
+\[
+\bigl\|\mu(S\cup T)-\mu(S)\bigr\|\le \frac{|T|}{|S|+|T|}\,\bigl\|\mu(T)-\mu(S)\bigr\|.
+\]
+\end{homework}
+
+\begin{proof}\solutionname
+Write $|S|=m$ and $|T|=t$. By definition,
+\[
+\mu(S\cup T)=\frac{1}{m+t}\sum_{x\in S\cup T} x=\frac{1}{m+t}\Bigl(\sum_{x\in S}x+\sum_{x\in T}x\Bigr)=\frac{m\,\mu(S)+t\,\mu(T)}{m+t}.
+\]
+Therefore
+\[
+\mu(S\cup T)-\mu(S)=\frac{m\,\mu(S)+t\,\mu(T)}{m+t}-\mu(S)=\frac{t\bigl(\mu(T)-\mu(S)\bigr)}{m+t},
+\]
+and taking norms,
+\[
+\bigl\|\mu(S\cup T)-\mu(S)\bigr\|=\frac{t}{m+t}\bigl\|\mu(T)-\mu(S)\bigr\|=\frac{|T|}{|S|+|T|}\bigl\|\mu(T)-\mu(S)\bigr\|.
+\]
+The inequality (in fact equality) follows.
+\end{proof}
+
+%================================================================
+\begin{homework}
+\textbf{Problem 5 (8 pts).} For the weighted graph in Figure 1 of the assignment:
+\begin{enumerate}
+    \item[(5.a)] Construct the graph Laplacian $L$.
+    \item[(5.b)] Compute the bipartition obtained by spectral clustering: give the second eigenvector and the induced partition.
+\end{enumerate}
+\end{homework}
+
+\begin{proof}\solutionname
+
+\textbf{(5.a) Laplacian.} Reading the edge weights from the figure: heavy edges $(v_1,v_2)=50$, $(v_1,v_3)=50$, $(v_4,v_5)=50$; light edges $(v_1,v_4)=1$, $(v_1,v_5)=1$, $(v_2,v_4)=1$, $(v_2,v_5)=1$, $(v_3,v_5)=1$. The weighted degrees are
+\[
+d_1=102,\;d_2=52,\;d_3=51,\;d_4=52,\;d_5=53.
+\]
+Thus $L=D-W$ equals
+\[
+L=
+\begin{pmatrix}
+102 & -50 & -50 & -1 & -1\\
+-50 & 52 & 0 & -1 & -1\\
+-50 & 0 & 51 & 0 & -1\\
+-1 & -1 & 0 & 52 & -50\\
+-1 & -1 & -1 & -50 & 53
+\end{pmatrix}.
+\]
+
+\textbf{(5.b) Spectral bipartition.}
+The smallest eigenvalue of $L$ is $0$ with eigenvector $\bm 1/\sqrt{5}$. The Fiedler vector $\phi_2$ (second-smallest eigenvalue) approximately separates the two clusters of strongly-connected vertices. Heavy edges of weight $50$ form two tightly bound groups: $A=\{v_1,v_2,v_3\}$ joined through $v_1$, and $B=\{v_4,v_5\}$ joined directly. Light weight-$1$ edges only weakly connect $A$ and $B$.
+
+The Fiedler vector takes opposite signs on $A$ and $B$. To leading order (ignoring small corrections from the weight-$1$ cross edges, which are $50\times$ smaller than intra-cluster edges) it is the indicator-difference vector orthogonal to $\bm 1$. With $|A|=3$, $|B|=2$, requiring $\sum_i\phi_2(i)=0$ and $\|\phi_2\|=1$ gives
+\[
+\phi_2 \;\approx\; \Bigl(\sqrt{\tfrac{2}{15}},\;\sqrt{\tfrac{2}{15}},\;\sqrt{\tfrac{2}{15}},\;-\sqrt{\tfrac{3}{10}},\;-\sqrt{\tfrac{3}{10}}\Bigr)
+\;\approx\;(0.365,\,0.365,\,0.365,\,-0.548,\,-0.548).
+\]
+The induced bipartition by sign of $\phi_2$ is
+\[
+C_1=\{v_1,v_2,v_3\},\qquad C_2=\{v_4,v_5\}.
+\]
+This matches intuition: the spectral cut severs only weight-$1$ edges and preserves all weight-$50$ edges.
+\end{proof}
+
+%================================================================
+\begin{homework}
+\textbf{Problem 6 (3 pts).} Compute the Jaccard similarities of each pair of $\{1,2,3,4\}$, $\{2,3,5,7\}$, $\{2,4,6\}$.
+\end{homework}
+
+\begin{proof}\solutionname
+Let $A=\{1,2,3,4\},\,B=\{2,3,5,7\},\,C=\{2,4,6\}$. Recall $J(X,Y)=|X\cap Y|/|X\cup Y|$.
+\begin{align*}
+J(A,B)&=\frac{|\{2,3\}|}{|\{1,2,3,4,5,7\}|}=\frac{2}{6}=\frac{1}{3},\\[2pt]
+J(A,C)&=\frac{|\{2,4\}|}{|\{1,2,3,4,6\}|}=\frac{2}{5},\\[2pt]
+J(B,C)&=\frac{|\{2\}|}{|\{2,3,4,5,6,7\}|}=\frac{1}{6}.
+\end{align*}
+\end{proof}
+
+%================================================================
+\begin{homework}
+\textbf{Problem 7 (2 pts).} Using Figure 2, augment the signatures with $h_3(x)=2x+1\bmod 5$ and $h_4(x)=3x-1\bmod 5$.
+\end{homework}
+
+\begin{proof}\solutionname
+
+The hash values per row are
+\[
+\begin{array}{c|ccccc}
+x & 0 & 1 & 2 & 3 & 4\\\hline
+h_3(x)=2x+1\bmod 5 & 1 & 3 & 0 & 2 & 4\\
+h_4(x)=3x-1\bmod 5 & 4 & 2 & 0 & 3 & 1
+\end{array}
+\]
+For each column $S_j$, the minhash with hash $h$ is $\min\{h(r):S_j(r)=1\}$.
+
+\begin{itemize}
+    \item $S_1$ has $1$'s at rows $\{0,3\}$: $h_3=\min(1,2)=1$, $h_4=\min(4,3)=3$.
+    \item $S_2$ has $1$'s at rows $\{2\}$: $h_3=0$, $h_4=0$.
+    \item $S_3$ has $1$'s at rows $\{1,3,4\}$: $h_3=\min(3,2,4)=2$, $h_4=\min(2,3,1)=1$.
+    \item $S_4$ has $1$'s at rows $\{0,2,3\}$: $h_3=\min(1,0,2)=0$, $h_4=\min(4,0,3)=0$.
+\end{itemize}
+
+The full signature matrix (rows of given $h_1,h_2$ included for reference) is
+\[
+\begin{array}{c|cccc}
+ & S_1 & S_2 & S_3 & S_4\\\hline
+h_1 & 1 & 3 & 0 & 1\\
+h_2 & 0 & 2 & 0 & 0\\
+h_3 & 1 & 0 & 2 & 0\\
+h_4 & 3 & 0 & 1 & 0
+\end{array}
+\]
+\end{proof}
+
+%================================================================
+\begin{homework}
+\textbf{Problem 8 (8 pts).} For the matrix in Figure 3 with $h_1(x)=2x+1\bmod 6,\;h_2(x)=3x+2\bmod 6,\;h_3(x)=5x+2\bmod 6$:
+\begin{enumerate}
+    \item[(a)] Compute the minhash signatures.
+    \item[(b)] Which hashes are true permutations?
+    \item[(c)] Compare estimated and true Jaccard similarities for the six pairs.
+\end{enumerate}
+\end{homework}
+
+\begin{proof}\solutionname
+
+\textbf{(a) Signatures.} The hash values are
+\[
+\begin{array}{c|cccccc}
+x & 0 & 1 & 2 & 3 & 4 & 5\\\hline
+h_1=2x+1\bmod 6 & 1 & 3 & 5 & 1 & 3 & 5\\
+h_2=3x+2\bmod 6 & 2 & 5 & 2 & 5 & 2 & 5\\
+h_3=5x+2\bmod 6 & 2 & 1 & 0 & 5 & 4 & 3
+\end{array}
+\]
+The columns have $1$'s at rows
+$S_1{=}\{2\}$, $S_2{=}\{0,1\}$, $S_3{=}\{2,3,4,5\}$, $S_4{=}\{0,2,5\}$. Taking $\min$ over those rows:
+\[
+\begin{array}{c|cccc}
+ & S_1 & S_2 & S_3 & S_4\\\hline
+h_1 & 5 & 1 & 1 & 1\\
+h_2 & 2 & 2 & 2 & 2\\
+h_3 & 0 & 1 & 0 & 0
+\end{array}
+\]
+
+\textbf{(b) Permutations.}
+$h_1$ takes values $\{1,3,5,1,3,5\}$, hitting only odd residues; not a permutation. $h_2$ takes values $\{2,5,2,5,2,5\}$; not a permutation. $h_3$ takes values $\{2,1,0,5,4,3\}$, all six residues exactly once; $h_3$ \emph{is} a true permutation. (Indeed $ax+b\bmod n$ is a permutation iff $\gcd(a,n)=1$, and $\gcd(5,6)=1$ while $\gcd(2,6)=\gcd(3,6)>1$.)
+
+\textbf{(c) Estimated vs.\ true Jaccards.}
+True Jaccards from the columns:
+\[
+\begin{aligned}
+J(S_1,S_2)&=0/3=0, & J(S_1,S_3)&=1/4=0.25, & J(S_1,S_4)&=1/3\approx 0.333,\\
+J(S_2,S_3)&=0/6=0, & J(S_2,S_4)&=1/4=0.25, & J(S_3,S_4)&=2/5=0.4.
+\end{aligned}
+\]
+Estimated Jaccards from the signature (fraction of hash rows on which the two columns agree):
+\[
+\begin{aligned}
+\hat J(S_1,S_2)&=1/3\approx 0.333\;(h_2 \text{ only}),\\
+\hat J(S_1,S_3)&=2/3\approx 0.667\;(h_2,h_3),\\
+\hat J(S_1,S_4)&=2/3\approx 0.667\;(h_2,h_3),\\
+\hat J(S_2,S_3)&=2/3\approx 0.667\;(h_1,h_2),\\
+\hat J(S_2,S_4)&=2/3\approx 0.667\;(h_1,h_2),\\
+\hat J(S_3,S_4)&=3/3=1.000.
+\end{aligned}
+\]
+
+\emph{Discussion.} The estimates are systematically too high. Two reasons: (i) only $h_3$ is a true permutation; $h_1,h_2$ collapse rows into very few buckets ($\{1,3,5\}$ and $\{2,5\}$ respectively), inflating the chance of accidental agreement and thus over-estimating similarity; (ii) the sample size of $3$ hash functions is far too small to yield concentration around the true Jaccard. Using many independent true permutations would drive $\hat J\to J$ by the law of large numbers (each indicator $\bm 1\{h(S_i)=h(S_j)\}$ is Bernoulli with mean exactly $J(S_i,S_j)$).
+\end{proof}
+
+\end{document}
