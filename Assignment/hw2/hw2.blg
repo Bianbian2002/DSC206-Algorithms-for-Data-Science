@@ -1,0 +1,9 @@
+[0] Config.pm:328> INFO - This is Biber 2.21
+[0] Config.pm:331> INFO - Logfile is 'hw2.blg'
+[25] biber-darwin:342> INFO - === Tue Apr 28, 2026, 19:24:58
+[31] Biber.pm:421> INFO - Reading 'hw2.bcf'
+[58] Biber.pm:1002> INFO - Found 0 citekeys in bib section 0
+[63] bbl.pm:676> INFO - Writing 'hw2.bbl' with encoding 'UTF-8'
+[63] bbl.pm:779> INFO - Output to hw2.bbl
+[63] Biber.pm:132> WARN - The file 'hw2.bcf' does not contain any citations!
+[63] Biber.pm:134> INFO - WARNINGS: 1
