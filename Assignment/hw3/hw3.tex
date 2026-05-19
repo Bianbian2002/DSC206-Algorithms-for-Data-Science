@@ -95,7 +95,7 @@ Consider a Bloom filter with $n=8$ bits of memory, a set $S$ of $m=100$ allowed 
 \end{homework}
 
 \begin{proof}[\solutionname]
-We adopt the convention that ``pass'' means the filter accepts the query (all $k$ probed bits equal $1$) and ``block'' means it rejects (at least one probed bit equals $0$).
+``Pass'' means the filter accepts (all $k$ probed bits equal $1$); ``block'' means it rejects (at least one probed bit equals $0$).
 
 \textbf{(i) Element in $S$.} A Bloom filter has \emph{no false negatives}: every bit set during the insertion of $x\in S$ remains set, so on a query for $x$ all $k$ probed bits are $1$ and the filter accepts. Hence
 \[
@@ -103,34 +103,25 @@ We adopt the convention that ``pass'' means the filter accepts the query (all $k
 \]
 
 \textbf{(ii) Element not in $S$.}
-After inserting the $m$ keys, $km=300$ independent uniform throws have been made into the $n=8$ bins. Let $B$ denote the (random) set of distinct bins hit; bit $i$ equals $1$ iff $i\in B$.
-
-For a query $x\notin S$, let $H=(h_1(x),\dots,h_k(x))$ be its $k$ hash images and let $T(H)=\{h_1(x),\dots,h_k(x)\}$ be the set of distinct probed positions, with $t=|T(H)|$. The filter \emph{passes} $x$ iff every bit in $T(H)$ is $1$, i.e.\ $T(H)\subseteq B$ (this is a false positive).
-
-Conditional on $T(H)=T$ with $|T|=t$, the event $\{T\subseteq B\}$ says that none of the $t$ specified bins is missed by all $km$ insertions. By inclusion–exclusion,
+During insertion, each of the $k$ hash functions sends each of the $m$ keys to a uniformly random bit, for a total of $km=300$ independent uniform throws into $n=8$ bins. A particular bit stays $0$ iff none of those throws lands on it, so
 \[
-\Pr[T\subseteq B]=\sum_{j=0}^{t}(-1)^{j}\binom{t}{j}\left(\frac{n-j}{n}\right)^{km}=:f(t).
+\Pr[\text{bit }i=0]=\Bigl(1-\tfrac{1}{n}\Bigr)^{km}=\Bigl(\tfrac{7}{8}\Bigr)^{300},
+\qquad
+\Pr[\text{bit }i=1]=1-\Bigl(\tfrac{7}{8}\Bigr)^{300}.
 \]
-The number of ordered $k$-tuples from $\{1,\dots,n\}$ that have exactly $t$ distinct values is $N(k,t)=\binom{n}{t}\,t!\,S(k,t)$, where $S(k,t)$ is the Stirling number of the second kind. Since each of the $k$ query hashes is uniform on $\{1,\dots,n\}$,
+A query on $x\notin S$ probes $k=3$ uniformly random bits, and the filter passes iff all of them are $1$. Treating the $k$ probed bits as independent (this is the standard textbook assumption — it ignores both that the query hashes may coincide and the weak negative correlation between bit states),
 \[
-\boxed{\Pr[\text{pass}\mid x\notin S]=\frac{1}{n^{k}}\sum_{t=1}^{\min(k,n)} N(k,t)\,f(t).}
+\boxed{\;\Pr[\text{pass}\mid x\notin S]=\Bigl(1-\bigl(1-\tfrac{1}{n}\bigr)^{km}\Bigr)^{k}=\Bigl(1-\bigl(\tfrac{7}{8}\bigr)^{300}\Bigr)^{3}.\;}
 \]
-
-For $k=3$ we have $N(3,1)=n$, $N(3,2)=3n(n-1)$, and $N(3,3)=n(n-1)(n-2)$ (which sum to $n^{3}$). With $n=8$, $km=300$ this becomes
+The problem instructs us not to apply the simplified large-$n$ approximation $(1-1/n)^{km}\approx e^{-km/n}$; we kept the exact $(7/8)^{300}$ instead. Numerically,
 \[
-\Pr[\text{pass}\mid x\notin S]=\frac{1}{512}\Bigl[8\,f(1)+168\,f(2)+336\,f(3)\Bigr],
+\bigl(\tfrac{7}{8}\bigr)^{300}=e^{300\ln(7/8)}\approx e^{-40.06}\approx 4.4\times 10^{-18},
 \]
-where
-\begin{align*}
-f(1) &= 1-\bigl(\tfrac{7}{8}\bigr)^{300},\\
-f(2) &= 1-2\bigl(\tfrac{7}{8}\bigr)^{300}+\bigl(\tfrac{6}{8}\bigr)^{300},\\
-f(3) &= 1-3\bigl(\tfrac{7}{8}\bigr)^{300}+3\bigl(\tfrac{6}{8}\bigr)^{300}-\bigl(\tfrac{5}{8}\bigr)^{300}.
-\end{align*}
-Numerically, $(7/8)^{300}=e^{300\ln(7/8)}\approx e^{-40.06}\approx 4.4\times 10^{-18}$, and the other two are vastly smaller. Thus $f(1),f(2),f(3)$ all equal $1$ to great precision, giving
+so
 \[
-\Pr[\text{pass}\mid x\notin S]\approx \frac{8+168+336}{512}=\frac{512}{512}=1.
+\Pr[\text{pass}\mid x\notin S]\approx \bigl(1-4.4\times 10^{-18}\bigr)^{3}\approx 1-1.3\times 10^{-17}\;\approx\;1.
 \]
-With only $8$ bits storing $100$ keys via $3$ hashes, all bits are essentially certain to be set and the filter rejects almost nothing.
+With only $n=8$ bits storing $m=100$ keys via $k=3$ hashes, the load factor $km/n=37.5$ is so high that every bit is essentially certain to be $1$, and the filter accepts essentially every non-member.
 \end{proof}
 
 %================================================================
