@@ -1,9 +1,9 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.22)  28 APR 2026 19:24
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.22)  6 MAY 2026 23:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**hw2.tex
-(./hw2.tex
+**hw3.tex
+(./hw3.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
 (../../elegantnote.cls
@@ -1440,8 +1440,8 @@ File: lstlang3.sty 2025/11/14 1.11b listings language file
 \@quotelevel=\count518
 \@quotereset=\count519
 
-(./hw2.aux)
-\openout1 = `hw2.aux'.
+No file hw3.aux.
+\openout1 = `hw3.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
@@ -1465,7 +1465,6 @@ LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
 Package biblatex Info: Trying to load language 'english'...
 Package biblatex Info: ... file 'english.lbx' found.
-
 (/usr/local/texlive/2026/texmf-dist/tex/latex/biblatex/lbx/english.lbx
 File: english.lbx 2025/07/10 v3.21 biblatex localization (PK/MW)
 )
@@ -1473,23 +1472,24 @@ Package biblatex Info: XeTeX detected.
 (biblatex)             Assuming input encoding 'utf8'.
 Package biblatex Info: Automatic encoding selection.
 (biblatex)             Assuming data encoding 'utf8'.
-\openout3 = `hw2.bcf'.
+\openout3 = `hw3.bcf'.
 
 Package biblatex Info: Trying to load bibliographic data...
-Package biblatex Info: ... file 'hw2.bbl' found.
+Package biblatex Info: ... file 'hw3.bbl' not found.
 
-(./hw2.bbl)
+No file hw3.bbl.
 Package biblatex Info: Reference section=0 on input line 10.
 Package biblatex Info: Reference segment=0 on input line 10.
 Package hyperref Info: Link coloring ON on input line 10.
- (./hw2.out) (./hw2.out)
 \@outlinefile=\write5
-\openout5 = `hw2.out'.
+\openout5 = `hw3.out'.
+
+
+Package hyperref Warning: Rerun to get /PageLabels entry.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
-
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
 *geometry* verbose mode - [ preamble ] result:
@@ -1552,42 +1552,61 @@ LaTeX Font Info:    Font shape `TU/texgyretermes(0)/m/it' will be
 (Font)              scaled to size 12.0pt on input line 12.
 LaTeX Font Info:    Font shape `TU/texgyretermes(0)/b/n' will be
 (Font)              scaled to size 12.0pt on input line 16.
-LaTeX Font Info:    Font shape `TU/texgyretermes(0)/m/n' will be
-(Font)              scaled to size 8.0pt on input line 29.
-LaTeX Font Info:    Font shape `TU/texgyretermes(0)/m/n' will be
-(Font)              scaled to size 6.0pt on input line 29.
+LaTeX Font Info:    Font shape `TU/texgyretermes(0)/b/it' will be
+(Font)              scaled to size 12.0pt on input line 41.
  [1
 
-]
-Overfull \hbox (30.79347pt too wide) in paragraph at lines 79--80
-[][][]\TU/texgyretermes(0)/b/n/12 Assignment 3 [][]\TU/texgyretermes(0)/m/it/12
- Graph $\OML/cmm/m/it/12 G \OT1/cmr/m/n/12 = (\OML/cmm/m/it/12 V; E\OT1/cmr/m/n
-/12 )$ \TU/texgyretermes(0)/m/it/12 has three connected components on vertex se
-ts $\OML/cmm/m/it/12 V[] \OT1/cmr/m/n/12 = \OMS/cmsy/m/n/12 f\OML/cmm/m/it/12 v
-[]; [] ; v[]\OMS/cmsy/m/n/12 g$\TU/texgyretermes(0)/m/it/12 ,
+] [2]
+LaTeX Font Info:    Font shape `TU/texgyretermes(0)/m/n' will be
+(Font)              scaled to size 8.0pt on input line 101.
+LaTeX Font Info:    Font shape `TU/texgyretermes(0)/m/n' will be
+(Font)              scaled to size 6.0pt on input line 101.
+
+[3]
+Overfull \hbox (17.27342pt too wide) in paragraph at lines 162--163
+\TU/texgyretermes(0)/m/n/12 gorithm tracks $\OML/cmm/m/it/12 R \OT1/cmr/m/n/12 
+= [][] \OML/cmm/m/it/12 r\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 h\OT1/cmr/m/n/12 (\O
+ML/cmm/m/it/12 x\OT1/cmr/m/n/12 ))$ \TU/texgyretermes(0)/m/n/12 as the stream i
+s processed; tracing through $\OT1/cmr/m/n/12 1\OML/cmm/m/it/12 ; \OT1/cmr/m/n/
+12 2\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 6\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 3\OM
+L/cmm/m/it/12 ; \OT1/cmr/m/n/12 2\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 2\OML/cmm/m
+/it/12 ; \OT1/cmr/m/n/12 3\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 1\OML/cmm/m/it/12 
+; \OT1/cmr/m/n/12 6\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 6$
  []
 
-[2] [3]
-LaTeX Font Info:    Font shape `TU/texgyretermes(0)/b/it' will be
-(Font)              scaled to size 12.0pt on input line 158.
- [4] [5] [6] (./hw2.aux)
+[4] (./hw3.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2020/03/25>
  ***********
-Package rerunfilecheck Info: File `hw2.out' has not changed.
-(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package logreq Info: Writing requests to 'hw2.run.xml'.
-\openout1 = `hw2.run.xml'.
+
+
+LaTeX Warning: There were undefined references.
+
+
+Package rerunfilecheck Warning: File `hw3.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `hw3.out':
+(rerunfilecheck)             Before: <no file>
+(rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
+
+Package biblatex Warning: Please (re)run Biber on the file:
+(biblatex)                hw3
+(biblatex)                and rerun LaTeX afterwards.
+
+Package logreq Info: Writing requests to 'hw3.run.xml'.
+\openout1 = `hw3.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 40429 strings out of 468168
- 848922 string characters out of 5432815
- 1755197 words of memory out of 5000000
- 68381 multiletter control sequences out of 15000+600000
+ 40375 strings out of 468168
+ 847634 string characters out of 5432815
+ 1753149 words of memory out of 5000000
+ 68335 multiletter control sequences out of 15000+600000
  642037 words of font info for 118 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  99i,12n,108p,1204b,803s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on hw2.pdf (6 pages).
+Output written on hw3.pdf (4 pages).

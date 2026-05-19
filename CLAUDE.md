@@ -38,7 +38,7 @@ For each new homework `hw<N>`:
 
 1. **Read inputs first.** Open `Assignment/hw<N>/hw<N>.pdf` (the prompt) and `hw_template.tex` (LaTeX template using `elegantnote` class with `homework` and `proof` environments). The shared preamble lives in the project root: `preface.tex` and `elegantnote.cls`.
 2. **Write to `Assignment/hw<N>/hw<N>.tex`.** Use `\input{../../preface}` (relative path — `preface.tex` is in the project root, two levels up). Do not duplicate `preface.tex` into the hw directory.
-3. **Per-problem structure:** wrap each problem's statement in `\begin{homework}...\end{homework}` and the solution in `\begin{proof}\solutionname ... \end{proof}`. Restate the problem briefly at the top of each `homework` block so the PDF is self-contained.
+3. **Per-problem structure:** wrap each problem's statement in `\begin{homework}...\end{homework}` and the solution in `\begin{proof}[\solutionname] ... \end{proof}`. Restate the problem at the top of each `homework` block so the PDF is self-contained.
 4. **Proof style:** rigorous but compact. Lead with the key insight, then the formal argument. Use `\MR`, `\MC`, etc. from `preface.tex`. Use `\bm` for vectors and `align*` for multi-line equations.
 5. **Compile to verify** before declaring done:
    ```

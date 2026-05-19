@@ -1,0 +1,174 @@
+% Use repo class (defines homework, \solutionname); system elegantnote.cls does not.
+\documentclass[en,hazy,blue,12pt,normal]{../../elegantnote}
+
+\input{../../preface}
+
+\title{DSC 206: Homework 3}
+\author{Zeyu Bian}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+%================================================================
+\begin{homework}
+Consider the two points $\bm x=(1,0,1,0,1,0)$ and $\bm y=(0,1,1,0,1,0)$. Compute the distance between them under the $L_0$ (Hamming), $L_1$, $L_2$ (Euclidean), and $L_\infty$ distances.
+\end{homework}
+
+\begin{proof}[\solutionname]
+The coordinate-wise differences are $\bm x-\bm y=(1,-1,0,0,0,0)$, so $\bm x$ and $\bm y$ disagree in exactly the first two coordinates.
+\begin{align*}
+L_0(\bm x,\bm y) &= \#\{i:x_i\neq y_i\}=2,\\
+L_1(\bm x,\bm y) &= \sum_i |x_i-y_i| = 1+1=2,\\
+L_2(\bm x,\bm y) &= \sqrt{\sum_i (x_i-y_i)^2}=\sqrt{2},\\
+L_\infty(\bm x,\bm y) &= \max_i|x_i-y_i|=1.
+\end{align*}
+\end{proof}
+
+%================================================================
+\begin{homework}
+On the space of nonnegative integers, decide whether each of the following is a distance measure. Recall the axioms: (i) $d(x,y)\ge 0$, (ii) $d(x,y)=0 \iff x=y$, (iii) $d(x,y)=d(y,x)$, (iv) triangle inequality $d(x,z)\le d(x,y)+d(y,z)$.
+\begin{enumerate}
+    \item[(a)] $\max(x,y)$ — the larger of $x$ and $y$;
+    \item[(b)] $\mathrm{diff}(x,y)=|x-y|$;
+    \item[(c)] $\mathrm{sum}(x,y)=x+y$.
+\end{enumerate}
+\end{homework}
+
+\begin{proof}[\solutionname]
+
+\textbf{(a) $\max(x,y)$ is \emph{not} a distance.}
+It violates axiom (ii): for any $x>0$, $\max(x,x)=x\neq 0$, so $d(x,x)\neq 0$. Concretely, $d(3,3)=3$.
+
+\textbf{(b) $\mathrm{diff}(x,y)=|x-y|$ is a distance.}
+This is the restriction of the standard Euclidean metric on $\MR$ to $\MN$.
+\begin{enumerate}
+    \item[(i)] $|x-y|\ge 0$ by definition of absolute value.
+    \item[(ii)] $|x-y|=0 \iff x-y=0 \iff x=y$.
+    \item[(iii)] $|x-y|=|-(y-x)|=|y-x|$.
+    \item[(iv)] $|x-z|=|(x-y)+(y-z)|\le |x-y|+|y-z|$ by the triangle inequality for $|\cdot|$ on $\MR$.
+\end{enumerate}
+
+\textbf{(c) $\mathrm{sum}(x,y)=x+y$ is \emph{not} a distance.}
+It violates axiom (ii): $d(2,2)=4\neq 0$. (It also fails the triangle inequality, e.g.\ $d(1,3)=4>d(1,2)+d(2,3)=3+5=8$ does hold here, but the failure of (ii) already rules it out.)
+\end{proof}
+
+%================================================================
+\begin{homework}
+Starting from the family of minHash functions (so a single hash matches with probability equal to the Jaccard similarity $s$), describe the effect on the matching probability of the following constructions. Write the probability as a function of $s$.
+\begin{enumerate}
+    \item[(a)] $2$-way AND followed by $3$-way OR.
+    \item[(b)] $3$-way OR followed by $2$-way AND.
+    \item[(c)] $2$-way AND, then $2$-way OR, then $2$-way AND.
+    \item[(d)] $2$-way OR, then $2$-way AND, then $2$-way OR, then $2$-way AND.
+\end{enumerate}
+\end{homework}
+
+\begin{proof}[\solutionname]
+Recall that an $r$-way AND on a family with collision probability $p$ produces collision probability $p^r$, and an $r$-way OR produces $1-(1-p)^r$. We compose stage by stage starting from $p_0=s$.
+
+\textbf{(a)} AND-2 gives $s^2$; OR-3 gives
+\[
+p(s)=1-(1-s^2)^3.
+\]
+
+\textbf{(b)} OR-3 gives $1-(1-s)^3$; AND-2 gives
+\[
+p(s)=\bigl(1-(1-s)^3\bigr)^2.
+\]
+
+\textbf{(c)} AND-2 gives $s^2$; OR-2 gives $1-(1-s^2)^2$; AND-2 gives
+\[
+p(s)=\bigl(1-(1-s^2)^2\bigr)^2.
+\]
+
+\textbf{(d)} OR-2 gives $1-(1-s)^2 = 2s-s^2$; AND-2 gives $(2s-s^2)^2 = s^2(2-s)^2$; OR-2 gives $1-(1-s^2(2-s)^2)^2$; AND-2 gives
+\[
+p(s)=\Bigl(1-\bigl(1-s^2(2-s)^2\bigr)^2\Bigr)^2.
+\]
+\end{proof}
+
+%================================================================
+\begin{homework}
+Consider a Bloom filter with $n=8$ bits of memory, a set $S$ of $m=100$ allowed keys, and $k=3$ independent random hash functions. Compute (i) the probability that an element of $S$ is blocked, and (ii) the probability that an element not in $S$ is blocked. Do not use the simplified large-$n$ approximation.
+\end{homework}
+
+\begin{proof}[\solutionname]
+
+\textbf{(i) Element in $S$.} A Bloom filter has \emph{no false negatives}: every bit set during the insertion of $x\in S$ remains set, so on a query for $x$ all $k$ probed bits are $1$ and the filter accepts. Hence
+\[
+\Pr[\text{block}\mid x\in S]=0.
+\]
+
+\textbf{(ii) Element not in $S$.}
+After inserting the $m$ keys, $km=300$ independent uniform throws have been made into the $n=8$ bins. Let $B$ denote the (random) set of distinct bins hit; bit $i$ equals $1$ iff $i\in B$.
+
+For a query $x\notin S$, let $H=(h_1(x),\dots,h_k(x))$ be its $k$ hash images and let $T(H)=\{h_1(x),\dots,h_k(x)\}$ be the set of distinct probed positions, with $t=|T(H)|$. The filter blocks $x$ iff every bit in $T(H)$ is $1$, i.e.\ $T(H)\subseteq B$.
+
+Conditional on $T(H)=T$ with $|T|=t$, the event $\{T\subseteq B\}$ says that none of the $t$ specified bins is missed by all $km$ insertions. By inclusion–exclusion,
+\[
+\Pr[T\subseteq B]=\sum_{j=0}^{t}(-1)^{j}\binom{t}{j}\left(\frac{n-j}{n}\right)^{km}=:f(t).
+\]
+The number of ordered $k$-tuples from $\{1,\dots,n\}$ that have exactly $t$ distinct values is $N(k,t)=\binom{n}{t}\,t!\,S(k,t)$, where $S(k,t)$ is the Stirling number of the second kind. Since each of the $k$ query hashes is uniform on $\{1,\dots,n\}$,
+\[
+\boxed{\Pr[\text{block}\mid x\notin S]=\frac{1}{n^{k}}\sum_{t=1}^{\min(k,n)} N(k,t)\,f(t).}
+\]
+
+For $k=3$ we have $N(3,1)=n$, $N(3,2)=3n(n-1)$, and $N(3,3)=n(n-1)(n-2)$ (which sum to $n^{3}$). With $n=8$, $km=300$ this becomes
+\[
+\Pr[\text{FP}]=\frac{1}{512}\Bigl[8\,f(1)+168\,f(2)+336\,f(3)\Bigr],
+\]
+where
+\begin{align*}
+f(1) &= 1-\bigl(\tfrac{7}{8}\bigr)^{300},\\
+f(2) &= 1-2\bigl(\tfrac{7}{8}\bigr)^{300}+\bigl(\tfrac{6}{8}\bigr)^{300},\\
+f(3) &= 1-3\bigl(\tfrac{7}{8}\bigr)^{300}+3\bigl(\tfrac{6}{8}\bigr)^{300}-\bigl(\tfrac{5}{8}\bigr)^{300}.
+\end{align*}
+Numerically, $(7/8)^{300}=e^{300\ln(7/8)}\approx e^{-40.06}\approx 4.4\times 10^{-18}$, and the other two are vastly smaller. Thus $f(1),f(2),f(3)$ all equal $1$ to extraordinary precision, giving
+\[
+\Pr[\text{block}\mid x\notin S]\approx \frac{8+168+336}{512}=\frac{512}{512}=1.
+\]
+With only $8$ bits storing $100$ keys via $3$ hashes, all bits are essentially certain to be set and the filter rejects almost nothing.
+\end{proof}
+
+%================================================================
+\begin{homework}
+Consider the data stream
+\[
+1,\,2,\,6,\,3,\,2,\,2,\,3,\,1,\,6,\,6.
+\]
+\begin{enumerate}
+    \item[(a)] What is the number of distinct items?
+    \item[(b)] Run the Flajolet–Martin algorithm with alphabet size $m=6$ and hash $h(x)=3x+1\bmod 7$. Show your work.
+    \item[(c)] Find the frequency of each element.
+\end{enumerate}
+\end{homework}
+
+\begin{proof}[\solutionname]
+
+\textbf{(a) Distinct count.} The distinct values appearing in the stream are $\{1,2,3,6\}$, so the true number of distinct items is $4$.
+
+\textbf{(b) Flajolet–Martin.} Apply the hash to each distinct stream value (repeats produce no new information). Since $h$ takes values in $\{0,1,\dots,6\}$, we represent each value with $\lceil\log_2 7\rceil=3$ bits and let $r(x)$ denote the number of trailing zeros in the binary expansion of $h(x)$.
+\begin{center}
+\begin{tabular}{c|c|c|c}
+$x$ & $h(x)=3x+1 \bmod 7$ & binary (3 bits) & $r(h(x))$ \\\hline
+$1$ & $4$ & $100$ & $2$ \\
+$2$ & $0$ & $000$ & $3$ \\
+$3$ & $3$ & $011$ & $0$ \\
+$6$ & $5$ & $101$ & $0$
+\end{tabular}
+\end{center}
+We use the convention that $h(x)=0$ contributes the maximum tail-length $\lceil\log_2 7\rceil=3$. The algorithm tracks $R=\max_x r(h(x))$ as the stream is processed; tracing through $1,2,6,3,2,2,3,1,6,6$ the running maximum becomes $2,3,3,3,3,3,3,3,3,3$. Hence $R=3$, and the FM estimate is
+\[
+\widehat{D}=2^{R}=2^{3}=8.
+\]
+This overestimates the true value $4$, which is typical for a single FM register on a tiny stream — in practice one averages many independent hash functions to reduce variance. (If one instead drops the $h=0$ value as ill-defined, then $R=2$ and $\widehat D=4$, matching the truth exactly.)
+
+\textbf{(c) Frequencies.} The stream has length $10$. Counting occurrences,
+\[
+f(1)=\tfrac{2}{10}=0.2,\quad f(2)=\tfrac{3}{10}=0.3,\quad f(3)=\tfrac{2}{10}=0.2,\quad f(6)=\tfrac{3}{10}=0.3.
+\]
+\end{proof}
+
+\end{document}
