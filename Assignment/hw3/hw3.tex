@@ -18,7 +18,7 @@ Consider the two points $\bm x=(1,0,1,0,1,0)$ and $\bm y=(0,1,1,0,1,0)$. Compute
 \end{homework}
 
 \begin{proof}[\solutionname]
-The coordinate-wise differences are $\bm x-\bm y=(1,-1,0,0,0,0)$, so $\bm x$ and $\bm y$ disagree in exactly the first two coordinates.
+The coordinate-wise differences are $\bm x-\bm y=(1,-1,0,0,0,0)$.
 \begin{align*}
 L_0(\bm x,\bm y) &= \#\{i:x_i\neq y_i\}=2,\\
 L_1(\bm x,\bm y) &= \sum_i |x_i-y_i| = 1+1=2,\\
@@ -40,10 +40,9 @@ On the space of nonnegative integers, decide whether each of the following is a 
 \begin{proof}[\solutionname]
 
 \textbf{(a) $\max(x,y)$ is \emph{not} a distance.}
-It violates axiom (ii): for any $x>0$, $\max(x,x)=x\neq 0$, so $d(x,x)\neq 0$. Concretely, $d(3,3)=3$.
+It violates axiom (ii): for any $x>0$, $\max(x,x)=x\neq 0$, so $d(x,x)\neq 0$.
 
 \textbf{(b) $\mathrm{diff}(x,y)=|x-y|$ is a distance.}
-This is the restriction of the standard Euclidean metric on $\MR$ to $\MN$.
 \begin{enumerate}
     \item[(i)] $|x-y|\ge 0$ by definition of absolute value.
     \item[(ii)] $|x-y|=0 \iff x-y=0 \iff x=y$.
@@ -52,7 +51,7 @@ This is the restriction of the standard Euclidean metric on $\MR$ to $\MN$.
 \end{enumerate}
 
 \textbf{(c) $\mathrm{sum}(x,y)=x+y$ is \emph{not} a distance.}
-It violates axiom (ii): $d(2,2)=4\neq 0$. (It also fails the triangle inequality, e.g.\ $d(1,3)=4>d(1,2)+d(2,3)=3+5=8$ does hold here, but the failure of (ii) already rules it out.)
+It violates axiom (ii): $d(2,2)=4\neq 0$.
 \end{proof}
 
 %================================================================
@@ -127,11 +126,11 @@ f(1) &= 1-\bigl(\tfrac{7}{8}\bigr)^{300},\\
 f(2) &= 1-2\bigl(\tfrac{7}{8}\bigr)^{300}+\bigl(\tfrac{6}{8}\bigr)^{300},\\
 f(3) &= 1-3\bigl(\tfrac{7}{8}\bigr)^{300}+3\bigl(\tfrac{6}{8}\bigr)^{300}-\bigl(\tfrac{5}{8}\bigr)^{300}.
 \end{align*}
-Numerically, $(7/8)^{300}=e^{300\ln(7/8)}\approx e^{-40.06}\approx 4.4\times 10^{-18}$, and the other two are vastly smaller. Thus $f(1),f(2),f(3)$ all equal $1$ to extraordinary precision, giving
+Numerically, $(7/8)^{300}=e^{300\ln(7/8)}\approx e^{-40.06}\approx 4.4\times 10^{-18}$, and the other two are vastly smaller. Thus $f(1),f(2),f(3)$ all equal $1$ to great precision, giving
 \[
 \Pr[\text{pass}\mid x\notin S]\approx \frac{8+168+336}{512}=\frac{512}{512}=1.
 \]
-With only $8$ bits storing $100$ keys via $3$ hashes, all bits are essentially certain to be set and the filter rejects almost nothing — every non-member passes through.
+With only $8$ bits storing $100$ keys via $3$ hashes, all bits are essentially certain to be set and the filter rejects almost nothing.
 \end{proof}
 
 %================================================================
@@ -151,7 +150,7 @@ Consider the data stream
 
 \textbf{(a) Distinct count.} The distinct values appearing in the stream are $\{1,2,3,6\}$, so the true number of distinct items is $4$.
 
-\textbf{(b) Flajolet–Martin.} Apply the hash to each distinct stream value (repeats produce no new information). Since $h$ takes values in $\{0,1,\dots,6\}$, we represent each value with $\lceil\log_2 7\rceil=3$ bits and let $r(x)$ denote the number of trailing zeros in the binary expansion of $h(x)$.
+\textbf{(b) Flajolet–Martin.} Apply the hash to each distinct stream value. Since $h$ takes values in $\{0,1,\dots,6\}$, we represent each value with $\lceil\log_2 7\rceil=3$ bits and let $r(x)$ denote the number of trailing zeros in the binary expansion of $h(x)$.
 \begin{center}
 \begin{tabular}{c|c|c|c}
 $x$ & $h(x)=3x+1 \bmod 7$ & binary (3 bits) & $r(h(x))$ \\\hline
