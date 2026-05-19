@@ -1,3 +1,4 @@
+% !TEX root = hw3.tex
 % Use repo class (defines homework, \solutionname); system elegantnote.cls does not.
 \documentclass[en,hazy,blue,12pt,normal]{../../elegantnote}
 
@@ -91,10 +92,11 @@ p(s)=\Bigl(1-\bigl(1-s^2(2-s)^2\bigr)^2\Bigr)^2.
 
 %================================================================
 \begin{homework}
-Consider a Bloom filter with $n=8$ bits of memory, a set $S$ of $m=100$ allowed keys, and $k=3$ independent random hash functions. Compute (i) the probability that an element of $S$ is blocked, and (ii) the probability that an element not in $S$ is going to pass the filter(not be blocked by the filter). Do not use the simplified large-$n$ approximation.
+Consider a Bloom filter with $n=8$ bits of memory, a set $S$ of $m=100$ allowed keys, and $k=3$ independent random hash functions. Compute (i) the probability that an element of $S$ is blocked, and (ii) the probability that an element not in $S$ is going to pass the filter (i.e.\ not be blocked by the filter). Do not use the simplified large-$n$ approximation.
 \end{homework}
 
 \begin{proof}[\solutionname]
+We adopt the convention that ``pass'' means the filter accepts the query (all $k$ probed bits equal $1$) and ``block'' means it rejects (at least one probed bit equals $0$).
 
 \textbf{(i) Element in $S$.} A Bloom filter has \emph{no false negatives}: every bit set during the insertion of $x\in S$ remains set, so on a query for $x$ all $k$ probed bits are $1$ and the filter accepts. Hence
 \[
@@ -104,7 +106,7 @@ Consider a Bloom filter with $n=8$ bits of memory, a set $S$ of $m=100$ allowed 
 \textbf{(ii) Element not in $S$.}
 After inserting the $m$ keys, $km=300$ independent uniform throws have been made into the $n=8$ bins. Let $B$ denote the (random) set of distinct bins hit; bit $i$ equals $1$ iff $i\in B$.
 
-For a query $x\notin S$, let $H=(h_1(x),\dots,h_k(x))$ be its $k$ hash images and let $T(H)=\{h_1(x),\dots,h_k(x)\}$ be the set of distinct probed positions, with $t=|T(H)|$. The filter blocks $x$ iff every bit in $T(H)$ is $1$, i.e.\ $T(H)\subseteq B$.
+For a query $x\notin S$, let $H=(h_1(x),\dots,h_k(x))$ be its $k$ hash images and let $T(H)=\{h_1(x),\dots,h_k(x)\}$ be the set of distinct probed positions, with $t=|T(H)|$. The filter \emph{passes} $x$ iff every bit in $T(H)$ is $1$, i.e.\ $T(H)\subseteq B$ (this is a false positive).
 
 Conditional on $T(H)=T$ with $|T|=t$, the event $\{T\subseteq B\}$ says that none of the $t$ specified bins is missed by all $km$ insertions. By inclusion–exclusion,
 \[
@@ -112,12 +114,12 @@ Conditional on $T(H)=T$ with $|T|=t$, the event $\{T\subseteq B\}$ says that non
 \]
 The number of ordered $k$-tuples from $\{1,\dots,n\}$ that have exactly $t$ distinct values is $N(k,t)=\binom{n}{t}\,t!\,S(k,t)$, where $S(k,t)$ is the Stirling number of the second kind. Since each of the $k$ query hashes is uniform on $\{1,\dots,n\}$,
 \[
-\boxed{\Pr[\text{block}\mid x\notin S]=\frac{1}{n^{k}}\sum_{t=1}^{\min(k,n)} N(k,t)\,f(t).}
+\boxed{\Pr[\text{pass}\mid x\notin S]=\frac{1}{n^{k}}\sum_{t=1}^{\min(k,n)} N(k,t)\,f(t).}
 \]
 
 For $k=3$ we have $N(3,1)=n$, $N(3,2)=3n(n-1)$, and $N(3,3)=n(n-1)(n-2)$ (which sum to $n^{3}$). With $n=8$, $km=300$ this becomes
 \[
-\Pr[\text{FP}]=\frac{1}{512}\Bigl[8\,f(1)+168\,f(2)+336\,f(3)\Bigr],
+\Pr[\text{pass}\mid x\notin S]=\frac{1}{512}\Bigl[8\,f(1)+168\,f(2)+336\,f(3)\Bigr],
 \]
 where
 \begin{align*}
@@ -127,9 +129,9 @@ f(3) &= 1-3\bigl(\tfrac{7}{8}\bigr)^{300}+3\bigl(\tfrac{6}{8}\bigr)^{300}-\bigl(
 \end{align*}
 Numerically, $(7/8)^{300}=e^{300\ln(7/8)}\approx e^{-40.06}\approx 4.4\times 10^{-18}$, and the other two are vastly smaller. Thus $f(1),f(2),f(3)$ all equal $1$ to extraordinary precision, giving
 \[
-\Pr[\text{block}\mid x\notin S]\approx \frac{8+168+336}{512}=\frac{512}{512}=1.
+\Pr[\text{pass}\mid x\notin S]\approx \frac{8+168+336}{512}=\frac{512}{512}=1.
 \]
-With only $8$ bits storing $100$ keys via $3$ hashes, all bits are essentially certain to be set and the filter rejects almost nothing.
+With only $8$ bits storing $100$ keys via $3$ hashes, all bits are essentially certain to be set and the filter rejects almost nothing — every non-member passes through.
 \end{proof}
 
 %================================================================
