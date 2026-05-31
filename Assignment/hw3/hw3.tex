@@ -109,17 +109,9 @@ During insertion, each of the $k$ hash functions sends each of the $m$ keys to a
 \qquad
 \Pr[\text{bit }i=1]=1-\Bigl(\tfrac{7}{8}\Bigr)^{300}.
 \]
-A query on $x\notin S$ probes $k=3$ uniformly random bits, and the filter passes iff all of them are $1$. Treating the $k$ probed bits as independent (this is the standard textbook assumption — it ignores both that the query hashes may coincide and the weak negative correlation between bit states),
+A query on $x\notin S$ probes $k=3$ uniformly random bits, and the filter passes iff all of them are $1$. Treating the $k$ probed bits as independent,
 \[
-\boxed{\;\Pr[\text{pass}\mid x\notin S]=\Bigl(1-\bigl(1-\tfrac{1}{n}\bigr)^{km}\Bigr)^{k}=\Bigl(1-\bigl(\tfrac{7}{8}\bigr)^{300}\Bigr)^{3}.\;}
-\]
-The problem instructs us not to apply the simplified large-$n$ approximation $(1-1/n)^{km}\approx e^{-km/n}$; we kept the exact $(7/8)^{300}$ instead. Numerically,
-\[
-\bigl(\tfrac{7}{8}\bigr)^{300}=e^{300\ln(7/8)}\approx e^{-40.06}\approx 4.4\times 10^{-18},
-\]
-so
-\[
-\Pr[\text{pass}\mid x\notin S]\approx \bigl(1-4.4\times 10^{-18}\bigr)^{3}\approx 1-1.3\times 10^{-17}\;\approx\;1.
+\boxed{\;\Pr[\text{pass}\mid x\notin S]=\Bigl(1-\bigl(1-\tfrac{1}{n}\bigr)^{km}\Bigr)^{k}=\Bigl(1-\bigl(\tfrac{7}{8}\bigr)^{300}\Bigr)^{3}\approx 1.\;}
 \]
 With only $n=8$ bits storing $m=100$ keys via $k=3$ hashes, the load factor $km/n=37.5$ is so high that every bit is essentially certain to be $1$, and the filter accepts essentially every non-member.
 \end{proof}
