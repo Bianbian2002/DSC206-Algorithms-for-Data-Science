@@ -1,0 +1,347 @@
+% !TEX root = hw4.tex
+% Use repo class (defines homework, \solutionname); system elegantnote.cls does not.
+\documentclass[en,hazy,blue,12pt,normal]{../../elegantnote}
+
+\input{../../preface}
+
+\title{DSC 206: Homework 4}
+\author{Zeyu Bian}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+%================================================================
+\begin{homework}
+Consider the data stream $1,2,6,3,2,2,3,1,6,6,5,4,2,5$. Choose $d=2$ and $w=5$ to compute the
+Count-min sketch as described in class, using the two hash functions
+$h_1(x)=(x+2)\bmod 5$ and $h_2(x)=(2x+1)\bmod 5$.
+\begin{enumerate}
+    \item[(a)] Construct the $d\times w$ hash table produced by the Count-min sketch algorithm.
+    \item[(b)] Return the estimated frequency of each item using the Count-min sketch.
+\end{enumerate}
+\end{homework}
+
+\begin{proof}[\solutionname]
+\textbf{(a)}\; The distinct items are $\{1,2,3,4,5,6\}$ with true counts
+\[
+c(1)=2,\quad c(2)=4,\quad c(3)=2,\quad c(4)=1,\quad c(5)=2,\quad c(6)=3 .
+\]
+Each item increments one cell per row, at the columns given by the hash functions:
+\[
+\begin{array}{c|cccccc}
+x & 1 & 2 & 3 & 4 & 5 & 6\\\hline
+h_1(x)=(x+2)\bmod 5 & 3 & 4 & 0 & 1 & 2 & 3\\
+h_2(x)=(2x+1)\bmod 5 & 3 & 0 & 2 & 4 & 1 & 3
+\end{array}
+\]
+Adding each item's true count into the cell it hashes to (note that in \emph{both} rows the items
+$1$ and $6$ collide in column $3$, since $h_1(1)=h_1(6)=3$ and $h_2(1)=h_2(6)=3$) gives the
+$2\times 5$ sketch:
+\[
+\begin{array}{c|ccccc}
+ & \text{col }0 & \text{col }1 & \text{col }2 & \text{col }3 & \text{col }4\\\hline
+\text{row }h_1 & 2 & 1 & 2 & 5 & 4\\
+\text{row }h_2 & 4 & 2 & 2 & 5 & 1
+\end{array}
+\]
+Row $h_1$: col $0$ holds $3$; col $1$ holds $4$; col $2$ holds $5$; col $3$ holds $1{+}6$; col $4$ holds $2$.
+Row $h_2$: col $0$ holds $2$; col $1$ holds $5$; col $2$ holds $3$; col $3$ holds $1{+}6$; col $4$ holds $4$.
+
+\medskip
+\textbf{(b)}\; The Count-min estimate is $\hat c(x)=\min\{\,T[1,h_1(x)],\,T[2,h_2(x)]\,\}$:
+\[
+\begin{array}{c|ccccc|c}
+x & h_1(x) & T[1,\cdot] & h_2(x) & T[2,\cdot] & \hat c(x)=\min & \text{true } c(x)\\\hline
+1 & 3 & 5 & 3 & 5 & \mathbf{5} & 2\\
+2 & 4 & 4 & 0 & 4 & \mathbf{4} & 4\\
+3 & 0 & 2 & 2 & 2 & \mathbf{2} & 2\\
+4 & 1 & 1 & 4 & 1 & \mathbf{1} & 1\\
+5 & 2 & 2 & 1 & 2 & \mathbf{2} & 2\\
+6 & 3 & 5 & 3 & 5 & \mathbf{5} & 3
+\end{array}
+\]
+The estimates for $2,3,4,5$ are exact. The estimates for $1$ and $6$ are both $5$, an
+overestimate: these two items collide in \emph{both} rows ($h_1(1)=h_1(6)$ and $h_2(1)=h_2(6)$),
+so no row can separate them and each inherits $c(1)+c(6)=2+3=5$. This illustrates that Count-min
+never underestimates ($\hat c(x)\ge c(x)$) and only overestimates when collisions occur in every row.
+\end{proof}
+
+%================================================================
+\begin{homework}
+Consider running the (online) Perceptron algorithm on a sequence of examples $S$. Let $S'$ be the
+same set of examples presented in a different order. Does the Perceptron algorithm necessarily make
+the same number of mistakes on $S$ as on $S'$? If so, why; if not, exhibit such $S,S'$ on which the
+mistake counts differ.
+\end{homework}
+
+\begin{proof}[\solutionname]
+\textbf{No}, the number of mistakes is \emph{not} order-invariant. While the classical mistake
+\emph{bound} $R^2/\gamma^2$ depends only on the geometry of the point set (and so is the same for any
+ordering), the \emph{realized} number of mistakes can change with the order, because each mistake
+updates $w$ and thereby changes which later points are misclassified.
+
+\medskip
+\textbf{Convention.} The algorithm starts at $w=\bm 0$, predicts $\hat y=\operatorname{sign}(w\cdot x)$,
+and makes a mistake whenever $\operatorname{sign}(w\cdot x)\neq y$; on the first example $w=\bm 0$
+gives $w\cdot x=0$, which is counted as a mistake (the zero vector cannot classify any point). On a
+mistake it updates $w\leftarrow w+y\,x$.
+
+\medskip
+\textbf{Counterexample.} Take the three points in $\mathbb R^2$
+\[
+p_1=(2,-1),\ y_1=+1;\qquad p_2=(-1,2),\ y_2=+1;\qquad p_3=(-1,-1),\ y_3=-1 .
+\]
+They are linearly separable: $w^\star=(1,1)$ gives $w^\star\!\cdot p_1=1>0,\ w^\star\!\cdot p_2=1>0,\
+w^\star\!\cdot p_3=-2<0$.
+
+\emph{Order} $S=(p_1,p_2,p_3)$:
+\begin{itemize}
+\item $p_1$: $w=\bm 0$, $w\cdot p_1=0$ $\Rightarrow$ \textbf{mistake}; update $w=(0,0)+(+1)(2,-1)=(2,-1)$.
+\item $p_2$: $w\cdot p_2=(2,-1)\cdot(-1,2)=-4<0$, predict $-1$ but $y=+1$ $\Rightarrow$ \textbf{mistake};
+      update $w=(2,-1)+(-1,2)=(1,1)$.
+\item $p_3$: $w\cdot p_3=(1,1)\cdot(-1,-1)=-2<0$, predict $-1=y$ $\Rightarrow$ correct.
+\end{itemize}
+Total: $\boxed{2}$ mistakes.
+
+\emph{Order} $S'=(p_3,p_1,p_2)$ (same set, reordered):
+\begin{itemize}
+\item $p_3$: $w=\bm 0$, $w\cdot p_3=0$ $\Rightarrow$ \textbf{mistake}; update $w=(0,0)+(-1)(-1,-1)=(1,1)$.
+\item $p_1$: $w\cdot p_1=(1,1)\cdot(2,-1)=1>0=$ predict $+1=y$ $\Rightarrow$ correct.
+\item $p_2$: $w\cdot p_2=(1,1)\cdot(-1,2)=1>0$, predict $+1=y$ $\Rightarrow$ correct.
+\end{itemize}
+Total: $\boxed{1}$ mistake.
+
+Thus the same examples in a different order yield $2$ versus $1$ mistakes. Intuitively, starting with
+the negative example $p_3$ immediately drives $w$ to the separator $(1,1)$, whereas starting with
+$p_1$ first pushes $w$ to $(2,-1)$, which misclassifies $p_2$ and forces an extra correction.
+\end{proof}
+
+%================================================================
+\begin{homework}
+Suppose we modify the (batch) Perceptron so that on each mistake we update
+$w \leftarrow w + \eta\,\mathrm{Label}(x_i)\,x_i$ for some fixed $\eta>0$ (instead of $\eta=1$), where
+$\mathrm{Label}(x)\in\{+1,-1\}$. Assuming the data are linearly separable, derive an upper bound on
+the number of updates this algorithm makes. Provide full details.
+\end{homework}
+
+\begin{proof}[\solutionname]
+\textbf{Setup.} Since the data are linearly separable, there is a unit vector $w^\star$
+($\|w^\star\|=1$) and a margin $\gamma>0$ with
+\[
+y_i\,(w^\star\!\cdot x_i)\ \ge\ \gamma \qquad\text{for all examples } (x_i,y_i),
+\]
+where $y_i=\mathrm{Label}(x_i)$. Let $R=\max_i\|x_i\|$. Start from $w_0=\bm 0$, and let $M$ be the
+total number of updates. We bound $w_M\cdot w^\star$ from below and $\|w_M\|$ from above, then combine.
+
+\medskip
+\textbf{Step 1: lower bound on the projection onto $w^\star$.}
+On an update caused by example $(x_i,y_i)$,
+\[
+w_{k+1}\cdot w^\star = (w_k+\eta\,y_i x_i)\cdot w^\star
+ = w_k\cdot w^\star + \eta\,y_i(x_i\cdot w^\star)
+ \ \ge\ w_k\cdot w^\star + \eta\gamma .
+\]
+Summing over the $M$ updates (and $w_0\cdot w^\star=0$),
+\[
+w_M\cdot w^\star \ \ge\ M\,\eta\,\gamma. \tag{1}
+\]
+
+\textbf{Step 2: upper bound on the norm.}
+A mistake on $(x_i,y_i)$ means $y_i(w_k\cdot x_i)\le 0$. Hence
+\[
+\|w_{k+1}\|^2 = \|w_k+\eta\,y_i x_i\|^2
+ = \|w_k\|^2 + 2\eta\,y_i(w_k\cdot x_i) + \eta^2\|x_i\|^2
+ \ \le\ \|w_k\|^2 + 0 + \eta^2 R^2 .
+\]
+Summing over the $M$ updates (and $\|w_0\|^2=0$),
+\[
+\|w_M\|^2 \ \le\ M\,\eta^2 R^2,\qquad\text{i.e.}\qquad \|w_M\|\ \le\ \eta R\sqrt{M}. \tag{2}
+\]
+
+\textbf{Step 3: combine via Cauchy--Schwarz.}
+Since $\|w^\star\|=1$,
+\[
+w_M\cdot w^\star \ \le\ \|w_M\|\,\|w^\star\| = \|w_M\| \ \le\ \eta R\sqrt{M}.
+\]
+Chaining with (1),
+\[
+M\,\eta\,\gamma \ \le\ \eta R\sqrt{M}
+\quad\Longrightarrow\quad
+\sqrt{M}\,\gamma \le R
+\quad\Longrightarrow\quad
+\boxed{\,M \ \le\ \dfrac{R^2}{\gamma^2}\,}.
+\]
+
+\textbf{Key insight.} The learning rate $\eta$ scales the lower bound (1) linearly and the upper
+bound (2) by the \emph{same} factor $\eta$ (after taking the square root), so $\eta$ cancels exactly.
+The mistake bound $R^2/\gamma^2$ is therefore \emph{independent of $\eta$}: a constant step size only
+rescales the iterate $w$ and does not change the geometry of the problem.
+\end{proof}
+
+%================================================================
+\begin{homework}
+For each function, decide whether it is convex and prove your claim.
+\begin{enumerate}
+    \item[(a)] $f(\bm x)=x_1^2-2x_2^2+3$, where $\bm x=(x_1,x_2)\in\mathbb R^2$.
+    \item[(b)] Let $f:\mathbb R^D\to\mathbb R$ be convex, and $A\in\mathbb R^{D\times d}$. Define
+        $g:\mathbb R^d\to\mathbb R$ by $g(\bm y)=f(A\bm y)$. Decide whether $g$ is convex.
+        \emph{(Prove directly from the definition; no theorems from class.)}
+    \item[(c)] $F(\bm x)=g(e^{x_1}+e^{x_2})$, where $\bm x\in\mathbb R^2$ and $g:\mathbb R\to\mathbb R$
+        is monotonically increasing and convex.
+\end{enumerate}
+\end{homework}
+
+\begin{proof}[\solutionname]
+\textbf{(a) Not convex.}\;
+The Hessian is $\nabla^2 f=\left(\begin{smallmatrix}2&0\\0&-4\end{smallmatrix}\right)$, which has a negative
+eigenvalue $-4$, so $f$ is not convex. A concrete violation of the definition: take
+$\bm u=(0,1)$, $\bm v=(0,-1)$, $\alpha=\tfrac12$. Then $\tfrac12\bm u+\tfrac12\bm v=(0,0)$ and
+\[
+f\!\left(\tfrac12\bm u+\tfrac12\bm v\right)=f(0,0)=3,
+\qquad
+\tfrac12 f(\bm u)+\tfrac12 f(\bm v)=\tfrac12(1)+\tfrac12(1)=1 .
+\]
+Since $3>1$, convexity ($f(\text{midpoint})\le$ average) fails.
+
+\medskip
+\textbf{(b) $g$ is convex.}\;
+Fix $\bm y_1,\bm y_2\in\mathbb R^d$ and $\alpha\in[0,1]$. By linearity of $A$,
+\[
+g(\alpha\bm y_1+(1-\alpha)\bm y_2)
+= f\!\big(A(\alpha\bm y_1+(1-\alpha)\bm y_2)\big)
+= f\!\big(\alpha\,A\bm y_1+(1-\alpha)\,A\bm y_2\big).
+\]
+Set $\bm u=A\bm y_1,\ \bm v=A\bm y_2\in\mathbb R^D$. By convexity of $f$,
+\[
+f(\alpha\bm u+(1-\alpha)\bm v)\ \le\ \alpha f(\bm u)+(1-\alpha)f(\bm v)
+= \alpha f(A\bm y_1)+(1-\alpha)f(A\bm y_2).
+\]
+Hence
+\[
+g(\alpha\bm y_1+(1-\alpha)\bm y_2)\ \le\ \alpha\,g(\bm y_1)+(1-\alpha)\,g(\bm y_2),
+\]
+so $g$ is convex. (Convexity is preserved under composition with an affine/linear map.)
+
+\medskip
+\textbf{(c) $F$ is convex.}\;
+Write $h(\bm x)=e^{x_1}+e^{x_2}$. Fix $\bm x,\bm y\in\mathbb R^2$ and $\alpha\in[0,1]$.
+
+\emph{Step 1 ($h$ is convex).} Using convexity of $t\mapsto e^{t}$ coordinatewise,
+\[
+h(\alpha\bm x+(1-\alpha)\bm y)
+= e^{\alpha x_1+(1-\alpha)y_1}+e^{\alpha x_2+(1-\alpha)y_2}
+\le \alpha e^{x_1}+(1-\alpha)e^{y_1}+\alpha e^{x_2}+(1-\alpha)e^{y_2},
+\]
+i.e. $h(\alpha\bm x+(1-\alpha)\bm y)\le \alpha\,h(\bm x)+(1-\alpha)\,h(\bm y)$.
+
+\emph{Step 2 (push through $g$).} Since $g$ is \emph{monotonically increasing}, applying it to the
+inequality of Step 1 preserves the direction:
+\[
+F(\alpha\bm x+(1-\alpha)\bm y)=g\big(h(\alpha\bm x+(1-\alpha)\bm y)\big)
+\ \le\ g\big(\alpha\,h(\bm x)+(1-\alpha)\,h(\bm y)\big).
+\]
+
+\emph{Step 3 (convexity of $g$).} Since $g$ is convex,
+\[
+g\big(\alpha\,h(\bm x)+(1-\alpha)\,h(\bm y)\big)
+\ \le\ \alpha\,g(h(\bm x))+(1-\alpha)\,g(h(\bm y))
+= \alpha F(\bm x)+(1-\alpha)F(\bm y).
+\]
+Chaining Steps 2 and 3 gives
+\[
+F(\alpha\bm x+(1-\alpha)\bm y)\ \le\ \alpha F(\bm x)+(1-\alpha)F(\bm y),
+\]
+so $F$ is convex. Note both hypotheses on $g$ are used: monotonicity to transfer the inner
+inequality, and convexity to split the outer one.
+\end{proof}
+
+%================================================================
+\begin{homework}
+Let $P=\{(1,2)^T,(-1,0.5)^T,(0,0.4)^T,(0.5,-0.5)^T,(-0.5,1.5)^T\}$ and let $H=\{\bm x\in\mathbb R^2:
+\bm x^T\bm w+b=0\}$ with $\bm w=(1,-1)^T$ and $b=0.5$. The hyperplane $H$ splits $P$ into two groups.
+Specify the groups and explain how they are obtained.
+\end{homework}
+
+\begin{proof}[\solutionname]
+A point lies on one side of $H$ according to the \emph{sign} of the signed value
+$s(\bm x)=\bm x^T\bm w+b = x_1-x_2+0.5$. Evaluating:
+\[
+\begin{array}{c|c|c}
+\bm x & s(\bm x)=x_1-x_2+0.5 & \text{side}\\\hline
+(1,2) & 1-2+0.5=-0.5 & -\\
+(-1,0.5) & -1-0.5+0.5=-1.0 & -\\
+(0,0.4) & 0-0.4+0.5=+0.1 & +\\
+(0.5,-0.5) & 0.5+0.5+0.5=+1.5 & +\\
+(-0.5,1.5) & -0.5-1.5+0.5=-1.5 & -
+\end{array}
+\]
+\textbf{Positive side} ($s>0$): $\{(0,0.4)^T,\ (0.5,-0.5)^T\}$.\\
+\textbf{Negative side} ($s<0$): $\{(1,2)^T,\ (-1,0.5)^T,\ (-0.5,1.5)^T\}$.
+
+\noindent\textbf{How obtained.} The hyperplane $H$ is the level set $s(\bm x)=0$; it divides $\mathbb
+R^2$ into the half-space where $s(\bm x)>0$ and the one where $s(\bm x)<0$. Plugging each point into
+$s$ and reading off the sign therefore tells us which side it falls on. (No point gives $s=0$, so none
+lies exactly on $H$.)
+\end{proof}
+
+%================================================================
+\begin{homework}
+Consider $\min_{\bm x\in\mathbb R^2} f(\bm x)$ with $f(\bm x)=x_1^2+2x_2^2-x_1x_2+1$. Choose a
+suitable step size $\eta>0$ and run four steps of gradient descent from $\bm x_0=(1,1)^T$; report the
+result. Discuss the choice of $\eta$.
+\end{homework}
+
+\begin{proof}[\solutionname]
+\textbf{Gradient and minimizer.}
+\[
+\nabla f(\bm x)=\begin{pmatrix}2x_1-x_2\\ 4x_2-x_1\end{pmatrix},
+\qquad
+\nabla^2 f=\begin{pmatrix}2&-1\\-1&4\end{pmatrix}=:H .
+\]
+Setting $\nabla f=\bm 0$ gives $x_2=2x_1$ and $4x_2=x_1$, hence the unique minimizer
+$\bm x^\star=(0,0)^T$ with $f(\bm x^\star)=1$. Since $H\succ 0$ (eigenvalues
+$\lambda=3\pm\sqrt2$, i.e. $\lambda_{\min}\approx1.586$, $\lambda_{\max}\approx4.414$), $f$ is
+strictly convex and gradient descent converges to $\bm x^\star$ for any $0<\eta<2/\lambda_{\max}$.
+
+\medskip
+\textbf{Choice of step size.} We take $\eta=0.2$, which is safely below
+$2/\lambda_{\max}\approx0.453$, guaranteeing monotone convergence. The update is
+$\bm x_{k+1}=\bm x_k-\eta\,\nabla f(\bm x_k)$:
+\[
+\begin{array}{c|c|c|c}
+k & \bm x_k & \nabla f(\bm x_k) & f(\bm x_k)\\\hline
+0 & (1,\,1) & (1,\,3) & 3.000\\
+1 & (0.800,\,0.400) & (1.200,\,0.800) & 1.480\\
+2 & (0.560,\,0.240) & (0.880,\,0.400) & 1.198\\
+3 & (0.384,\,0.160) & (0.608,\,0.256) & 1.090\\
+4 & (0.2624,\,0.1088) & (0.6080,\,0.2560)^{\dagger} & 1.064
+\end{array}
+\]
+($^\dagger$ shown for completeness; not applied.) After four steps,
+\[
+\boxed{\ \bm x_4\approx(0.262,\,0.109)^T,\qquad f(\bm x_4)\approx 1.064\ }
+\]
+which is converging toward the optimum $\bm x^\star=(0,0)^T$, $f^\star=1$.
+
+\medskip
+\textbf{Discussion of $\eta$.} For a quadratic with Hessian $H$, gradient descent contracts the error
+by $\bm x_{k+1}-\bm x^\star=(I-\eta H)(\bm x_k-\bm x^\star)$, so it converges iff
+$|1-\eta\lambda|<1$ for every eigenvalue, i.e. $0<\eta<2/\lambda_{\max}\approx0.453$. Too large an
+$\eta$ ($\ge0.453$) diverges or oscillates; too small an $\eta$ converges slowly. The step size that
+minimizes the worst-case contraction factor is
+$\eta^\star=\dfrac{2}{\lambda_{\min}+\lambda_{\max}}=\dfrac{2}{6}=\dfrac13$, giving the optimal rate
+$\dfrac{\lambda_{\max}-\lambda_{\min}}{\lambda_{\max}+\lambda_{\min}}=\dfrac{\sqrt2}{3}\approx0.47$
+per step; our choice $\eta=0.2$ is a safe, conservative value in this admissible range.
+\end{proof}
+
+%================================================================
+\bigskip
+\noindent\textbf{AI usage report.} I used an AI assistant (Claude) to help organize the writeup,
+cross-check the arithmetic of the Count-min sketch (Problem 1) and the four gradient-descent
+iterations (Problem 6), and to verify the algebra of the Perceptron mistake-bound derivation
+(Problem 3) and the convexity arguments (Problem 4). I designed and verified the Problem 2
+counterexample and confirmed all final numerical answers independently.
+
+\end{document}
